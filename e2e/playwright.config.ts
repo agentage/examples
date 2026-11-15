@@ -1,6 +1,6 @@
 import { defineConfig } from '@playwright/test';
 
-// Against `agentage extension up` (the release images behind the local gateway); PROBE_BASE_URL elsewhere.
+// Against `agentage extension up --docker` (the release images behind the local gateway); PROBE_BASE_URL elsewhere.
 export default defineConfig({
   testDir: '.',
   forbidOnly: !!process.env.CI,

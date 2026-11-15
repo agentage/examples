@@ -42,7 +42,7 @@ You need Node 22 or newer, npm 10 or newer, Docker and git. Nothing needs a sign
 ```bash
 git clone https://github.com/agentage/extension-probe && cd extension-probe
 npm ci                                   # installs the cli pinned in the lockfile
-npx agentage extension up                # last line: ready    7 parts healthy    <n> s
+npx agentage extension up --docker       # last line: ready    7 parts healthy    <n> s
 # open http://localhost:4280/ui/<version>/harness.html (version from package.json), click ping
 curl -s localhost:4280/.well-known/agentage-extension.json
 T=$(npx agentage extension token --scope probe:read)   # from the dev issuer on localhost:4281
@@ -53,7 +53,7 @@ npx agentage extension down              # removes the containers, network and v
 ```
 
 Use `npx agentage` inside the clone. A global `agentage` can be older than the pinned one and lack
-`extension up`.
+`extension up --docker`.
 
 `up` reports 7 parts. Five run as containers: pages, ui, api, mcp and worker. `store` is
 postgres. `cli` runs on your machine.
@@ -67,7 +67,7 @@ What CI runs, in order:
 ```bash
 npm run verify                    # type-check, lint, format, tests with coverage, build
 npx agentage extension check      # six rules; PASS probe <version> conforms
-npx agentage extension up         # each part's /health body is asserted
+npx agentage extension up --docker # each part's /health body is asserted
 npx playwright install chromium   # once; a bare Linux also needs --with-deps
 npm run test:e2e                  # smoke and the widget tests
 ```

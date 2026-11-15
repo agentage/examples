@@ -32,6 +32,19 @@ describe('GET /api/probe/echo', () => {
     }
   });
 
+  it('survives a null caller: a host with no token check', async () => {
+    const base = createTestContext();
+    const ctx = { ...base, auth: { ...base.auth, caller: () => null } };
+    const local = await startTestServer({ create, ctx });
+    try {
+      const res = await local.fetch('/api/probe/echo?msg=hi');
+      expect(res.status).toBe(200);
+      expect(await res.text()).toBe('{"success":true,"data":{"msg":"hi"}}');
+    } finally {
+      await local.close();
+    }
+  });
+
   it('keeps the caller agcid', async () => {
     const res = await server.fetch('/api/probe/echo?msg=hi', {
       headers: { agcid: 'ec40000000000000000000000000000a' },

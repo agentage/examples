@@ -37,7 +37,7 @@ Read the file named here before you read `src/`.
 
 ## Commands
 
-- `npm run verify`; `agentage extension up` (asserts each part's `/health` body), then
+- `npm run verify`; `agentage extension up --docker` (asserts each part's `/health` body), then
   `npm run test:e2e` (the Playwright smoke and the widget axe test through `localhost:4280`);
   `agentage extension down` removes this working copy's compose project only (named in
   `.agentage/compose.json`, one per checkout), so scripts address it with `-f`, never `-p`
