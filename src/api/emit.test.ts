@@ -24,7 +24,7 @@ beforeEach(() => {
 
 const agcid = (n: number) => `e0${String(n).padStart(30, '0')}`;
 const post = (id: string, body?: object) =>
-  server.fetch('/api/v1/emit', {
+  server.fetch('/api/probe/emit', {
     method: 'POST',
     headers: { agcid: id, 'content-type': 'application/json' },
     ...(body && { body: JSON.stringify(body) }),
@@ -32,7 +32,7 @@ const post = (id: string, body?: object) =>
 
 const errors = () => ctx.logs.filter(({ fields }) => 'err' in fields);
 
-describe('POST /api/v1/emit', () => {
+describe('POST /api/probe/emit', () => {
   it('writes a log, a span around store.query and the probe.emitted event, with the agcid', async () => {
     const res = await post(agcid(1));
     expect(res.status).toBe(200);

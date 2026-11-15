@@ -4,7 +4,7 @@ import { EchoQuerySchema } from '../lib/echo.schema.js';
 import { recentTicks, TicksQuerySchema } from '../lib/ticks.js';
 import { emit } from './emit.js';
 
-// The kit mounts this router at /api/v1/.
+// The kit mounts this router at /api/probe/.
 export const create = (ctx: PartContext): Router => {
   const router = Router();
   router.get('/echo', (req, res) => {

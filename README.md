@@ -27,7 +27,7 @@ each for pages, ui, api, mcp and worker, so this repo has no Dockerfile or compo
 | ------ | ---------------------------------------------------------------------------- |
 | pages  | `/`: `probe {version} · {commit}`                                            |
 | ui     | `/ui/{version}/probe.js`, `harness.html`                                     |
-| api    | `GET /api/v1/echo`, `GET /api/v1/ticks`, `POST /api/v1/emit`, `openapi.json` |
+| api    | `GET /api/probe/echo`, `GET /api/probe/ticks`, `POST /api/probe/emit`, `openapi.json` |
 | mcp    | `POST /mcp`: tool `probe__echo`                                              |
 | worker | job `tick`, one row in `ticks` per minute                                    |
 | store  | postgres                                                                     |
@@ -46,7 +46,7 @@ npx agentage extension up                # last line: ready    7 parts healthy  
 # open http://localhost:4280/ui/<version>/harness.html (version from package.json), click ping
 curl -s localhost:4280/.well-known/agentage-extension.json
 T=$(npx agentage extension token --scope probe:read)   # from the dev issuer on localhost:4281
-curl -s -H "Authorization: Bearer $T" "localhost:4280/api/v1/echo?msg=hi"
+curl -s -H "Authorization: Bearer $T" "localhost:4280/api/probe/echo?msg=hi"
 npx agentage extension install .         # linked: the working copy
 npx agentage ping                        # pong
 npx agentage extension down              # removes the containers, network and volume

@@ -22,30 +22,30 @@ const get = async (path: string) => {
   return { status: res.status, body: OkEnvelopeSchema.parse(await res.json()) };
 };
 
-describe('GET /api/v1/ticks', () => {
+describe('GET /api/probe/ticks', () => {
   it('starts from the seed, newest first, with an exact total and a default limit of 50', async () => {
-    const { status, body } = await get('/api/v1/ticks?limit=1');
+    const { status, body } = await get('/api/probe/ticks?limit=1');
     expect(status).toBe(200);
     expect(body.data).toEqual([{ id: '1', job: 'seed', tickedAt: expect.stringMatching(ISO) }]);
     expect(body.meta).toEqual({ pagination: { limit: 1, total: 1 } });
-    expect((await get('/api/v1/ticks')).body.meta).toEqual({ pagination: { limit: 50, total: 1 } });
+    expect((await get('/api/probe/ticks')).body.meta).toEqual({ pagination: { limit: 50, total: 1 } });
   });
 
   it('pages by cursor once more ticks exist', async () => {
     await ctx.store.query("insert into ticks (job) values ('tick'), ('tick')");
-    const first = await get('/api/v1/ticks?limit=2');
+    const first = await get('/api/probe/ticks?limit=2');
     expect((first.body.data as { id: string }[]).map((t) => t.id)).toEqual(['3', '2']);
     expect(encodeCursor('2')).toBe('Mg');
     expect(first.body.meta).toEqual({
       pagination: { limit: 2, total: 3, nextCursor: encodeCursor('2') },
     });
-    const next = await get('/api/v1/ticks?limit=2&cursor=Mg');
+    const next = await get('/api/probe/ticks?limit=2&cursor=Mg');
     expect((next.body.data as { id: string }[]).map((t) => t.id)).toEqual(['1']);
     expect(next.body.meta).toEqual({ pagination: { limit: 2, total: 3 } });
   });
 
   it('clamps a limit above 200 and refuses a limit below 1 and a bad cursor', async () => {
-    expect((await get('/api/v1/ticks?limit=500')).body.meta).toEqual({
+    expect((await get('/api/probe/ticks?limit=500')).body.meta).toEqual({
       pagination: { limit: 200, total: 3 },
     });
     for (const query of [
@@ -58,7 +58,7 @@ describe('GET /api/v1/ticks', () => {
       `cursor=${encodeCursor('9223372036854775808')}`,
       'other=1',
     ]) {
-      const res = await server.fetch(`/api/v1/ticks?${query}`);
+      const res = await server.fetch(`/api/probe/ticks?${query}`);
       expect(res.status, query).toBe(400);
       expect(ErrorEnvelopeSchema.parse(await res.json()).error.code, query).toBe(
         'VALIDATION_ERROR'

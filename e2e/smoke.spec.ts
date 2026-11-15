@@ -58,18 +58,18 @@ test('pages names the version and the commit', async ({ request }) => {
 test('the api answers echo to a read token and ticks to anyone, with an agcid', async ({
   request,
 }) => {
-  const none = await request.get('/api/v1/echo?msg=hi');
+  const none = await request.get('/api/probe/echo?msg=hi');
   expect([none.status(), none.headers()['www-authenticate']]).toEqual([401, RESOURCE]);
   const minted = await request.post(`${ISSUER}/token`, { data: { scope: `${id}:read` } });
   const { token } = (await minted.json()) as { token: string };
-  const echo = await request.get('/api/v1/echo?msg=hi', {
+  const echo = await request.get('/api/probe/echo?msg=hi', {
     headers: { authorization: `Bearer ${token}` },
   });
   expect(await echo.text()).toBe('{"success":true,"data":{"msg":"hi","caller":"usr_dev"}}');
   expect(echo.headers()['agcid']).toMatch(AGCID);
-  const ticks = OkEnvelopeSchema.parse(await (await request.get('/api/v1/ticks?limit=1')).json());
+  const ticks = OkEnvelopeSchema.parse(await (await request.get('/api/probe/ticks?limit=1')).json());
   expect(ticks.data).toEqual([expect.objectContaining({ job: expect.any(String) })]);
-  const bad = await request.get('/api/v1/ticks?limit=0');
+  const bad = await request.get('/api/probe/ticks?limit=0');
   expect(ErrorEnvelopeSchema.parse(await bad.json()).error.code).toBe('VALIDATION_ERROR');
 });
 
@@ -79,7 +79,7 @@ test('emit takes a write token only and names the three lines it wrote', async (
     return ((await minted.json()) as { token: string }).token;
   };
   const emit = async (scope: string) =>
-    request.post('/api/v1/emit', { headers: { authorization: `Bearer ${await token(scope)}` } });
+    request.post('/api/probe/emit', { headers: { authorization: `Bearer ${await token(scope)}` } });
   const read = await emit(`${id}:read`);
   expect([read.status(), ErrorEnvelopeSchema.parse(await read.json()).error.code]).toEqual([
     403,
