@@ -17,7 +17,7 @@
   },
   "engines": {
     "node": ">=22",
-    "agentage": "^0.12"
+    "agentage": "^0.13"
   },
   "agentage": {
     "id": "probe",
@@ -44,6 +44,10 @@
       }
     ],
     "settings": {
+      "echo.prefix": {
+        "type": "string",
+        "default": ""
+      },
       "mcp.listing": {
         "type": "string",
         "enum": [
@@ -76,7 +80,7 @@
     "prepublishOnly": "npm run verify"
   },
   "dependencies": {
-    "@agentage/extension": "0.12.3",
+    "@agentage/extension": "0.13.0",
     "express": "^5.1.0",
     "zod": "^4.2.0"
   },

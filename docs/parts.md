@@ -27,7 +27,7 @@ Source: [`src/ui`](../src/ui/index.ts). The widget is `<probe-echo>`, written in
 
 Source: [`src/api`](../src/api/index.ts).
 
-- `GET /api/probe/echo?msg=` needs `probe:read`. `msg` is 1 to 200 characters.
+- `GET /api/probe/echo?msg=` needs `probe:read`. `msg` is 1 to 200 characters. The setting `echo.prefix` (default empty) is put before `msg` with one space: prefix `hey` and `msg=hi` answer `hey hi`.
 - `GET /api/probe/ticks?limit=&cursor=` returns ticks, newest first. The default limit is 50. A limit
   above 200 is clamped to 200.
 - `GET /api/probe/ticks` needs no token.

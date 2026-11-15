@@ -19,6 +19,19 @@ describe('GET /api/probe/echo', () => {
     expect(res.headers.get('agcid')).toMatch(AGCID);
   });
 
+  it('puts the echo.prefix setting before msg, and nothing when it is empty', async () => {
+    const prefixed = await startTestServer({
+      create,
+      ctx: createTestContext({ settings: { 'echo.prefix': 'hey' } }),
+    });
+    try {
+      const res = await prefixed.fetch('/api/probe/echo?msg=hi');
+      expect(await res.text()).toBe('{"success":true,"data":{"msg":"hey hi","caller":"usr_test"}}');
+    } finally {
+      await prefixed.close();
+    }
+  });
+
   it('keeps the caller agcid', async () => {
     const res = await server.fetch('/api/probe/echo?msg=hi', {
       headers: { agcid: 'ec40000000000000000000000000000a' },
