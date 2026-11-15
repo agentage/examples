@@ -4,12 +4,13 @@ import { EchoQuerySchema } from '../lib/echo.schema.js';
 import { recentTicks, TicksQuerySchema } from '../lib/ticks.js';
 import { emit } from './emit.js';
 
-// The kit mounts this router at /api/v1/.
+// The kit mounts this router at /api/probe/.
 export const create = (ctx: PartContext): Router => {
   const router = Router();
   router.get('/echo', (req, res) => {
     const { msg } = parse(EchoQuerySchema, req.query, 'Invalid query');
-    res.json(ok({ msg, caller: ctx.auth.caller(req)?.sub }));
+    const prefix = ctx.settings['echo.prefix'];
+    res.json(ok({ msg: prefix ? `${prefix} ${msg}` : msg, caller: ctx.auth.caller(req)?.sub }));
   });
   router.get('/ticks', async (req, res) => {
     const query = parse(TicksQuerySchema, req.query, 'Invalid query');

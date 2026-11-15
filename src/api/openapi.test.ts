@@ -70,7 +70,7 @@ const generated = () => ({
   // C6: the only place a route names its scope; the kit asks for it before the route runs.
   components: { securitySchemes: { pat: { type: 'http', scheme: 'bearer' } } },
   paths: {
-    '/api/v1/echo': {
+    '/api/probe/echo': {
       get: {
         operationId: 'echo',
         security: [{ pat: [`${id}:read`] }],
@@ -78,7 +78,7 @@ const generated = () => ({
         responses: { '200': ok(z.object({ msg: z.string(), caller: z.string() })), '400': invalid },
       },
     },
-    '/api/v1/ticks': {
+    '/api/probe/ticks': {
       get: {
         operationId: 'ticks',
         security: [],
@@ -86,7 +86,7 @@ const generated = () => ({
         responses: { '200': ok(z.array(TickSchema), PaginationSchema), '400': invalid },
       },
     },
-    '/api/v1/emit': {
+    '/api/probe/emit': {
       post: {
         operationId: 'emit',
         security: [{ pat: [`${id}:write`] }],
@@ -114,7 +114,7 @@ describe('openapi.json', () => {
     const { stack } = create(createTestContext());
     expect(stack.filter((layer) => !layer.route).map((layer) => layer.name)).toEqual([]);
     const served = stack.flatMap(({ route }) =>
-      route ? route.stack.map(({ method }) => `${method} /api/v1${route.path}`) : []
+      route ? route.stack.map(({ method }) => `${method} /api/probe${route.path}`) : []
     );
     const documented = Object.entries(generated().paths).flatMap(([path, ops]) =>
       Object.keys(ops).map((method) => `${method} ${path}`)
