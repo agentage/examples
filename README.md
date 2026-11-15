@@ -23,15 +23,15 @@ The ui part exports a `widgets` map instead. The kit,
 [`@agentage/extension`](https://github.com/agentage/platform), runs each part and builds one image
 each for pages, ui, api, mcp and worker, so this repo has no Dockerfile or compose file.
 
-| Part   | Serves                                                                       |
-| ------ | ---------------------------------------------------------------------------- |
-| pages  | `/`: `probe {version} · {commit}`                                            |
-| ui     | `/ui/{version}/probe.js`, `harness.html`                                     |
+| Part   | Serves                                                                                |
+| ------ | ------------------------------------------------------------------------------------- |
+| pages  | `/`: `probe {version} · {commit}`                                                     |
+| ui     | `/ui/{version}/probe.js`, `harness.html`                                              |
 | api    | `GET /api/probe/echo`, `GET /api/probe/ticks`, `POST /api/probe/emit`, `openapi.json` |
-| mcp    | `POST /mcp`: tool `probe__echo`                                              |
-| worker | job `tick`, one row in `ticks` per minute                                    |
-| store  | postgres                                                                     |
-| cli    | `agentage ping [msg]`                                                        |
+| mcp    | `POST /mcp`: tool `probe__echo`                                                       |
+| worker | job `tick`, one row in `ticks` per minute                                             |
+| store  | postgres                                                                              |
+| cli    | `agentage ping [msg]`                                                                 |
 
 More: [docs/parts.md](docs/parts.md), with what the kit owns.
 

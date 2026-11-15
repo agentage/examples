@@ -28,7 +28,9 @@ describe('GET /api/probe/ticks', () => {
     expect(status).toBe(200);
     expect(body.data).toEqual([{ id: '1', job: 'seed', tickedAt: expect.stringMatching(ISO) }]);
     expect(body.meta).toEqual({ pagination: { limit: 1, total: 1 } });
-    expect((await get('/api/probe/ticks')).body.meta).toEqual({ pagination: { limit: 50, total: 1 } });
+    expect((await get('/api/probe/ticks')).body.meta).toEqual({
+      pagination: { limit: 50, total: 1 },
+    });
   });
 
   it('pages by cursor once more ticks exist', async () => {

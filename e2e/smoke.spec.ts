@@ -67,7 +67,9 @@ test('the api answers echo to a read token and ticks to anyone, with an agcid', 
   });
   expect(await echo.text()).toBe('{"success":true,"data":{"msg":"hi","caller":"usr_dev"}}');
   expect(echo.headers()['agcid']).toMatch(AGCID);
-  const ticks = OkEnvelopeSchema.parse(await (await request.get('/api/probe/ticks?limit=1')).json());
+  const ticks = OkEnvelopeSchema.parse(
+    await (await request.get('/api/probe/ticks?limit=1')).json()
+  );
   expect(ticks.data).toEqual([expect.objectContaining({ job: expect.any(String) })]);
   const bad = await request.get('/api/probe/ticks?limit=0');
   expect(ErrorEnvelopeSchema.parse(await bad.json()).error.code).toBe('VALIDATION_ERROR');
