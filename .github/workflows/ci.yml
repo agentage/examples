@@ -40,7 +40,7 @@ jobs:
   local:
     name: up and the e2e gate on local
     runs-on: ubuntu-latest
-    # The gate on local stays under 10 minutes (about 3 on 2026-11-06); slower is a regression.
+    # The gate on docker stays under 10 minutes (about 3 on 2026-11-06); slower is a regression.
     timeout-minutes: 10
     steps:
       - name: Checkout
@@ -80,12 +80,12 @@ jobs:
       - name: Smoke and the widget a11y test through the local gateway (e2e/)
         run: npm run test:e2e
 
-      - name: e2e gate on local (agentage/e2e, probe gate local)
+      - name: e2e gate on docker (agentage/e2e, probe gate docker)
         if: github.actor != 'dependabot[bot]'
         working-directory: e2e-suite
         env:
           PROBE_DIR: ${{ github.workspace }}
-        run: npm run e2e -- probe gate local
+        run: npm run e2e -- probe gate docker
 
       # A gate that skipped itself is not green (55 executed on 2026-11-06); the cli part tests need PROBE_DIR.
       - name: Assert the gate was not vacuous and read this checkout
