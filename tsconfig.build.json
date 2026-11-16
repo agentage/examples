@@ -4,5 +4,13 @@
     "sourceMap": false,
     "declarationMap": false
   },
-  "exclude": ["node_modules", "dist", "coverage", "src/**/*.test.ts", "src/ui"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "src/ui",
+    "src/app"
+  ]
 }

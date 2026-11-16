@@ -11,20 +11,21 @@ const pkg = JSON.parse(readFileSync(new URL('../package.json', SRC), 'utf8')) as
 
 const sources = (): [string, string][] =>
   readdirSync(SRC, { recursive: true, encoding: 'utf8' })
-    .filter((file) => /\.tsx?$/.test(file) && !file.endsWith('.test.ts'))
+    .filter((file) => /\.tsx?$/.test(file) && !/\.test\.tsx?$/.test(file))
     .map((file) => [file, readFileSync(new URL(file, SRC), 'utf8')]);
 
 const relativeImports = (text: string): string[] =>
   [...text.matchAll(/from '(\.[^']+)'/g)].map((match) => match[1] ?? '');
 
 describe('the manifest', () => {
-  it('is a valid agentage manifest with all seven parts', () => {
+  it('is a valid agentage manifest with all eight parts; the app part has its nav row', () => {
     const manifest = validateManifest(pkg);
     expect(imageParts(manifest)).toEqual(['pages', 'ui', 'api', 'mcp', 'worker']);
     expect(manifest.agentage.parts).toEqual({
-      ...{ pages: true, ui: true, api: true, mcp: true, worker: true, cli: true },
+      ...{ pages: true, ui: true, api: true, mcp: true, worker: true, cli: true, app: true },
       store: 'postgres',
     });
+    expect(manifest.agentage.app).toEqual({ title: 'Probe', icon: 'radar', order: 10 });
     expect(manifest.agentage.commands?.map(({ name }) => name)).toEqual(['ping']);
   });
 

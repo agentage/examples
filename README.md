@@ -19,7 +19,7 @@ agentage ping                       # prints pong
 ## Parts
 
 A part is one unit of the extension that does one job. Most are `src/` folders; the store is `migrations/` and `seeds/`. Each part exports only `create(ctx)`.
-The ui part exports a `widgets` map instead. The kit,
+The ui part exports a `widgets` map instead, and the app part a default root component. The kit,
 [`@agentage/extension`](https://github.com/agentage/platform), runs each part and builds one image
 each for pages, ui, api, mcp and worker, so this repo has no Dockerfile or compose file.
 
@@ -32,6 +32,7 @@ each for pages, ui, api, mcp and worker, so this repo has no Dockerfile or compo
 | worker | job `tick`, one row in `ticks` per minute                                             |
 | store  | postgres                                                                              |
 | cli    | `agentage ping [msg]`                                                                 |
+| app    | the shell page `/probe`: nav row Probe (`radar`), Ping, Notify, Details, the draft    |
 
 More: [docs/parts.md](docs/parts.md), with what the kit owns.
 

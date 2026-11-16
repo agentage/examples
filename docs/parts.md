@@ -23,6 +23,20 @@ Source: [`src/ui`](../src/ui/index.ts). The widget is `<probe-echo>`, written in
 - `/ui/{version}/probe.js` serves the widget bundle.
 - `harness.html` is a test page for the widget.
 
+## app
+
+Source: [`src/app`](../src/app/index.tsx). One root component for the shell (S1.2.2), built by the
+kit into `dist/app` (`agentage-extension app`, the last step of `npm run build`). It imports only
+`react`, `@agentage/app` and `@agentage/design-system` components by subpath: no `fetch(`, no
+`localStorage`, no stylesheet import.
+
+- The nav row: `agentage.app` in `package.json`, title `Probe`, icon `radar`, order 10.
+- Ping calls `useAppHost().api('/echo?msg=hi')` (the `X-Agentage-App: probe` header) and shows
+  `pong hi`; Notify sends one notice; Details opens the aside, where its `Region` shows
+  `probe details`; the Draft input keeps its value in `useAppState('draft')`.
+- `npm run build` leaves `src/app` out of `tsc`; `extension up` builds it on each save and reloads
+  only the app.
+
 ## api
 
 Source: [`src/api`](../src/api/index.ts).
