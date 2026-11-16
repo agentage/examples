@@ -24,7 +24,7 @@ checkout of agentage/e2e:
 
 ```bash
 npm ci && npx playwright install --with-deps chromium
-PROBE_DIR=/path/to/extension-probe npm run e2e -- probe gate local
+PROBE_DIR=/path/to/extension-probe npm run e2e -- probe gate docker
 ```
 
 `PROBE_DIR` lets the gate read `probe.mcpc.json`, `openapi.json` and the cli part from this
