@@ -17,7 +17,7 @@
   },
   "engines": {
     "node": ">=22",
-    "agentage": "^0.14"
+    "agentage": "^0.15"
   },
   "agentage": {
     "id": "probe",
@@ -65,6 +65,8 @@
   "files": [
     "dist",
     "migrations",
+    "openapi.json",
+    "probe.mcpc.json",
     "!dist/**/*.test.*"
   ],
   "scripts": {
@@ -80,7 +82,7 @@
     "prepublishOnly": "npm run verify"
   },
   "dependencies": {
-    "@agentage/extension": "0.14.0",
+    "@agentage/extension": "0.15.0",
     "express": "^5.1.0",
     "zod": "^4.2.0"
   },
