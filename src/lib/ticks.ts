@@ -28,9 +28,9 @@ export const TicksQuerySchema = z.strictObject({
 
 export const encodeCursor = (id: string): string => Buffer.from(id).toString('base64url');
 
-export type TicksQuery = z.infer<typeof TicksQuerySchema>;
+type TicksQuery = z.infer<typeof TicksQuerySchema>;
 
-export interface Tick {
+interface Tick {
   id: string;
   job: string;
   tickedAt: string;
