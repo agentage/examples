@@ -6,14 +6,16 @@ run, verify and release. This file adds only what the tree does not say.
 
 ## Where facts live
 
-- The parts at a glance, the kit: `README.md` "Parts".
+- The parts at a glance, the kit: `README.md` "What it serves".
 - api routes, scopes, limits, `emit` `exit`/`fail`: `docs/parts.md` "api"; proof `openapi.json` (generated).
 - The MCP tool and its input: `docs/parts.md` "mcp"; proof `probe.mcpc.json` (generated).
-- pages, ui, worker, cli: `docs/parts.md` "pages", "ui", "worker", "cli"; proof `src/{part}/index.ts`.
+- pages, ui, app, worker, cli: `docs/parts.md` "pages", "ui", "app", "worker", "cli"; proof `src/{part}/index.ts` (`src/app/index.tsx`).
 - Database, seeds, the migrate entry: `docs/parts.md` "store"; proof `migrations/`, `seeds/`.
 - Clone commands and tokens: `README.md` "Run it from a clone"; what `up` does, ports: `docs/develop.md` "Run it from a clone".
 - What CI runs: `README.md` "Verify"; the e2e gate, `MIN_EXECUTED`: `docs/develop.md` "Verify"; proof `.github/workflows/ci.yml`.
 - Release steps and refusals: `README.md` "Release"; proof `.github/workflows/release.yml`.
+- Where a release runs: `README.md` "Deploy".
+- The target design (the extension model, the app host, the app shell): the north star in the agentage product vault, `projects/architecture/`. Do not copy it into this repo.
 - The manifest, commands, settings and secrets: the `agentage` block of `package.json`.
 
 Read the file named here before you read `src/`.
