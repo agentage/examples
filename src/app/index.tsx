@@ -8,11 +8,7 @@ interface Echo {
   msg: string;
 }
 
-// The probe app: one of each hook and a Region, through @agentage/extension/app only (S1.2.2 row 11).
-export default function App() {
-  const { api, user, scopes } = useAppHost();
-  const { notify, openAside } = useAppShell();
-  const [draft, setDraft] = useAppState('draft', '');
+const usePing = (api: <T>(path: string) => Promise<T>) => {
   const [pong, setPong] = useState('');
   const ping = async () => {
     try {
@@ -21,6 +17,15 @@ export default function App() {
       setPong(String((err as { code?: string }).code ?? err));
     }
   };
+  return [pong, ping] as const;
+};
+
+// The probe app: one of each hook and a Region, through @agentage/extension/app only (S1.2.2 row 11).
+export default function App() {
+  const { api, user, scopes } = useAppHost();
+  const { notify, openAside } = useAppShell();
+  const [draft, setDraft] = useAppState('draft', '');
+  const [pong, ping] = usePing(api);
   return (
     <section className="flex max-w-xl flex-col gap-4 p-6">
       <h1 className="text-xl font-semibold">Probe</h1>
@@ -39,7 +44,9 @@ export default function App() {
           Details
         </Button>
       </div>
-      <p aria-live="polite">{pong}</p>
+      <p aria-live="polite" className="min-h-6">
+        {pong}
+      </p>
       <Region name="aside">
         <p className="p-4">probe details</p>
       </Region>

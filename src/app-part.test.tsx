@@ -61,4 +61,14 @@ describe('the probe app part (S1.2.2 rows 2 to 6)', () => {
     expect(document.body.textContent).toContain('probe details');
     expect(el.querySelector('label')?.textContent).toBe('Draft');
   });
+
+  it('Ping shows the error code when the api fails, and the status line keeps its height', async () => {
+    const el = await mount(createTestRecord(), () => {
+      throw Object.assign(new Error('x'), { code: 'forbidden' });
+    });
+    await act(async () => button('Ping').click());
+    const live = el.querySelector('[aria-live="polite"]');
+    expect(live?.textContent).toContain('forbidden');
+    expect(live?.className).toContain('min-h-6');
+  });
 });
