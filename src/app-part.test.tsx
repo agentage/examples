@@ -2,6 +2,8 @@
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it } from 'vitest';
+import axe from 'axe-core';
+import { createStateStore, type StateStore } from '@agentage/extension/app';
 import { createTestRecord, TestHost, type TestRecord } from '@agentage/extension/app/test-host';
 import App from './app/index.js';
 
@@ -13,14 +15,18 @@ afterEach(() => {
   document.body.innerHTML = '';
 });
 
-const mount = async (record: TestRecord, reply?: (c: { path: string }) => unknown) => {
+const mount = async (
+  record: TestRecord,
+  reply?: (c: { path: string }) => unknown,
+  store?: StateStore
+) => {
   const el = document.body.appendChild(document.createElement('div'));
   root = createRoot(el);
   const user = { id: 'u1', email: 'lab@example.test' };
   const scopes = ['probe:read', 'probe:write'];
   await act(async () =>
     root?.render(
-      <TestHost id="probe" user={user} scopes={scopes} record={record} reply={reply}>
+      <TestHost id="probe" user={user} scopes={scopes} record={record} reply={reply} store={store}>
         <App />
       </TestHost>
     )
@@ -51,7 +57,7 @@ describe('the probe app part (S1.2.2 rows 2 to 6)', () => {
     expect(el.textContent).toContain('pong hi');
   });
 
-  it('Notify gives one notice, Details opens the aside, the draft is kept in state', async () => {
+  it('Notify gives one notice, Details opens the aside, the Draft input has its label', async () => {
     const record = createTestRecord();
     const el = await mount(record);
     await act(async () => button('Notify').click());
@@ -70,5 +76,40 @@ describe('the probe app part (S1.2.2 rows 2 to 6)', () => {
     const live = el.querySelector('[aria-live="polite"]');
     expect(live?.textContent).toContain('forbidden');
     expect(live?.className).toContain('min-h-6');
+  });
+
+  it('the draft is kept in useAppState across a remount (a live reload)', async () => {
+    const store = createStateStore();
+    const el = await mount(createTestRecord(), undefined, store);
+    const input = el.querySelector('input') as HTMLInputElement;
+    const setValue = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')?.set;
+    await act(async () => {
+      setValue?.call(input, 'abc');
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    act(() => root?.unmount());
+    document.body.innerHTML = '';
+    const again = await mount(createTestRecord(), undefined, store);
+    expect((again.querySelector('input') as HTMLInputElement).value).toBe('abc');
+  });
+});
+
+describe('the probe app page: a11y and keyboard', () => {
+  it('axe finds no violation (colour contrast is the shell, checked in a browser)', async () => {
+    const el = await mount(createTestRecord());
+    const result = await axe.run(el, { rules: { 'color-contrast': { enabled: false } } });
+    expect(result.violations.map((v) => `${v.id}: ${v.help}`)).toEqual([]);
+  });
+
+  it('one h1; the controls are native, named and in tab order: Draft, Ping, Notify, Details', async () => {
+    const el = await mount(createTestRecord());
+    expect(el.querySelectorAll('h1')).toHaveLength(1);
+    const controls = [...el.querySelectorAll<HTMLElement>('input, button')];
+    expect(controls.map((c) => c.tabIndex)).toEqual([0, 0, 0, 0]);
+    const name = (c: HTMLElement) =>
+      c.textContent || el.querySelector(`label[for="${c.id}"]`)?.textContent;
+    expect(controls.map(name)).toEqual(['Draft', 'Ping', 'Notify', 'Details']);
+    controls[1]?.focus();
+    expect(document.activeElement).toBe(controls[1]);
   });
 });
