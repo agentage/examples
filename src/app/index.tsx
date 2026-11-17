@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Region, useAppHost, useAppShell, useAppState } from '@agentage/app';
+import { Region, useAppHost, useAppShell, useAppState } from '@agentage/extension/app';
 import { Button } from '@agentage/design-system/button';
 import { Input } from '@agentage/design-system/input';
 import { Label } from '@agentage/design-system/label';
@@ -8,7 +8,7 @@ interface Echo {
   msg: string;
 }
 
-// The probe app: one of each hook and a Region, through @agentage/app only (S1.2.2 row 11).
+// The probe app: one of each hook and a Region, through @agentage/extension/app only (S1.2.2 row 11).
 export default function App() {
   const { api, user, scopes } = useAppHost();
   const { notify, openAside } = useAppShell();

@@ -2,7 +2,7 @@
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { afterEach, describe, expect, it } from 'vitest';
-import { createTestRecord, TestHost, type TestRecord } from '@agentage/app/test-host';
+import { createTestRecord, TestHost, type TestRecord } from '@agentage/extension/app/test-host';
 import App from './app/index.js';
 
 (globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true;

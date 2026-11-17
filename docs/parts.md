@@ -27,7 +27,7 @@ Source: [`src/ui`](../src/ui/index.ts). The widget is `<probe-echo>`, written in
 
 Source: [`src/app`](../src/app/index.tsx). One root component for the shell (S1.2.2), built by the
 kit into `dist/app` (`agentage-extension app`, the last step of `npm run build`). It imports only
-`react`, `@agentage/app` and `@agentage/design-system` components by subpath: no `fetch(`, no
+`react`, `@agentage/extension/app` and `@agentage/design-system` components by subpath: no `fetch(`, no
 `localStorage`, no stylesheet import.
 
 - The nav row: `agentage.app` in `package.json`, title `Probe`, icon `radar`, order 10.
