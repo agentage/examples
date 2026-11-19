@@ -98,14 +98,12 @@ refuses a tag moved to another commit. Ship a fix as a new version.
 
 ## Deploy
 
-A release deploys nothing. Two files run the probe on `next`, the staging estate:
+A release deploys nothing. One file runs the probe on `next`, the staging estate:
 
-- The `probe` row in agentage/estate `estate.yaml` has `version: latest`. The cloud extension opens
-  a pull request for each new release, and the merge deploys `probe.next.agentage.io`.
 - The `probe` row in `test/installation.json` of agentage/apphosts is an exact version on the `test`
-  app host.
+  app host, served at `https://test.next.agentage.io`. A change of that row deploys the app host.
 
-Both repositories are private.
+The agentage/apphosts repository is private.
 
 ## Documentation
 
