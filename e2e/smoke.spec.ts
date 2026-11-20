@@ -116,3 +116,17 @@ test('/health and a reserved miss are the gateway 404, never a part', async ({ r
     expect(res.headers()['content-type'] ?? '', path).not.toContain('application/json');
   }
 });
+
+test('the kit route /caller answers a read token with its subject and scopes, and 401 with none', async ({
+  request,
+}) => {
+  const path = `/api/${id}/caller`;
+  expect((await request.get(path)).status()).toBe(401);
+  const minted = await request.post(`${ISSUER}/token`, { data: { scope: `${id}:read` } });
+  const { token } = (await minted.json()) as { token: string };
+  const res = await request.get(path, { headers: { authorization: `Bearer ${token}` } });
+  expect(await res.json()).toEqual({
+    success: true,
+    data: { sub: 'usr_dev', scopes: [`${id}:read`] },
+  });
+});
