@@ -1,2 +1,1 @@
 # One line per extension folder that a merge must not release yet: the folder name, then why.
-fixture its images ghcr.io/agentage/fixture, fixture-api and fixture-pages are linked to agentage/extension-fixture; remove this line once agentage/examples can write them
