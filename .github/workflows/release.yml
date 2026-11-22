@@ -32,6 +32,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: extensions/*/package-lock.json
 
+      # A hold line without a reason fails the run (release-hold.sh), so a typo never releases a held folder.
       # A held folder leaves this checkout (sparse), so the cli neither sees it nor tags it.
       - name: Hold the extensions named in .github/release-hold
         id: hold
@@ -40,7 +41,7 @@ jobs:
           keep=()
           for d in extensions/*/; do
             name=$(basename "$d")
-            why=$(awk -v n="$name" '$1 == n { $1 = ""; sub(/^ +/, ""); print; exit }' .github/release-hold)
+            why=$(.github/scripts/release-hold.sh .github/release-hold "$name")
             if [ -n "$why" ]; then
               echo "AMBER $name: not released: $why"
               echo "::warning title=$name is held::$why"
@@ -70,4 +71,4 @@ jobs:
       - if: steps.hold.outputs.any == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx -y @agentage/cli@0.71.0 extension release --changed # pinned: the merge-release cli
+        run: npx -y @agentage/cli@0.73.0 extension release --changed # pinned: the merge-release cli
