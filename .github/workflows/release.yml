@@ -1,11 +1,12 @@
 name: Release
 
-# A v* tag: agentage extension release refuses the template, a commit off master and a tag that is
-# not the version, keeps a released version (re-run = npm only), then pushes the images, attaches
-# agentage-extension.json to the release and publishes to npm with OIDC (npm = this file).
+# A merge is the release: agentage extension release --changed gives each extension whose folder
+# differs from its last <id>@* tag a date version YYYY.MDD.N, the tag <id>@<version>, its images,
+# the records on the GitHub release and npm with OIDC (a private package skips npm). One that fails
+# does not stop the others; the run ends with one table and is red when any failed.
 on:
   push:
-    tags: ['v*']
+    branches: [master]
 
 concurrency:
   group: release
@@ -18,9 +19,9 @@ permissions:
 
 jobs:
   release:
-    name: Images, record, package
+    name: Images, records, packages of the changed extensions
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v7
         with:
@@ -29,11 +30,44 @@ jobs:
         with:
           node-version: 22
           cache: 'npm'
-      - run: npm ci --ignore-scripts && npm run verify
-      - run: npm install -g npm@11 # OIDC needs npm >= 11.5.1
-      - env:
+          cache-dependency-path: extensions/*/package-lock.json
+
+      # A held folder leaves this checkout (sparse), so the cli neither sees it nor tags it.
+      - name: Hold the extensions named in .github/release-hold
+        id: hold
+        run: |
+          set -euo pipefail
+          keep=()
+          for d in extensions/*/; do
+            name=$(basename "$d")
+            why=$(awk -v n="$name" '$1 == n { $1 = ""; sub(/^ +/, ""); print; exit }' .github/release-hold)
+            if [ -n "$why" ]; then
+              echo "AMBER $name: not released: $why"
+              echo "::warning title=$name is held::$why"
+            else
+              keep+=("${d%/}")
+            fi
+          done
+          if [ "${#keep[@]}" -lt "$(find extensions -mindepth 1 -maxdepth 1 -type d | wc -l)" ]; then
+            git sparse-checkout set --cone "${keep[@]}"
+          fi
+          test -z "$(git status --porcelain)"
+          echo "any=$([ "${#keep[@]}" -gt 0 ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
+      - name: Install and verify each extension (its own lockfile)
+        if: steps.hold.outputs.any == 'true'
+        run: |
+          set -euo pipefail
+          for d in extensions/*/; do
+            (cd "$d" && npm ci --ignore-scripts && npm run verify)
+          done
+      - if: steps.hold.outputs.any == 'true'
+        run: npm install -g npm@11 # OIDC needs npm >= 11.5.1
+      - if: steps.hold.outputs.any == 'true'
+        env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
-      - env:
+      - if: steps.hold.outputs.any == 'true'
+        env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node_modules/.bin/agentage extension release # the lockfile's cli, never a fresh resolve
+        run: npx -y @agentage/cli@0.71.0 extension release --changed # pinned: the merge-release cli

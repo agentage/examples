@@ -24,13 +24,13 @@ checkout of agentage/e2e:
 
 ```bash
 npm ci && npx playwright install --with-deps chromium
-PROBE_DIR=/path/to/extension-probe npm run e2e -- probe gate docker
+PROBE_DIR=/path/to/examples/extensions/probe npm run e2e -- probe gate docker
 ```
 
 `PROBE_DIR` lets the gate read `probe.mcpc.json`, `openapi.json` and the cli part from this
 checkout. Some gate tests skip locally: they need a deployed release.
 
-- CI fails a gate that ran fewer tests than `MIN_EXECUTED` in `.github/workflows/ci.yml`.
+- CI fails a gate that ran fewer tests than `MIN_EXECUTED` of `probe` in the repo root `.github/workflows/ci.yml`.
 - CI also fails a gate that ran none of the cli part tests.
 - The job is bounded at 10 minutes.
 - Dependabot runs get no secrets. So they skip the agentage/e2e checkout and the gate. `up` and
