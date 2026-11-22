@@ -1,5 +1,7 @@
 # examples
 
+![examples: an extension in extensions/<id>, a merge to master releases <id>@version, the estate runs the images](https://github.com/agentage/examples/raw/master/docs/banner.svg)
+
 Two small agentage extensions that show how an extension is built and released. Use them to learn the shape, or copy one to start your own.
 
 ## Quick start
@@ -63,7 +65,7 @@ cd extensions/probe && npm ci && npm run verify && npx agentage extension check
 - Never tag, publish or run the release workflow by hand. A merge to master releases.
 - Run `agentage extension up`, `install`, `setup` and `update` only in a throwaway environment: they change the local daemon.
 - Run `agentage extension create` with `--no-install`.
-- Deeper rules: [CLAUDE.md](CLAUDE.md), [extensions/probe/CLAUDE.md](extensions/probe/CLAUDE.md), [extensions/fixture/CLAUDE.md](extensions/fixture/CLAUDE.md), [docs/release.md](docs/release.md).
+- Deeper rules: [CLAUDE.md](CLAUDE.md) (`AGENTS.md` links to it), one per extension folder, and [docs/release.md](docs/release.md).
 
 ## Related
 
