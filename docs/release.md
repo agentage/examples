@@ -1,7 +1,7 @@
 # Release by merge
 
 `.github/workflows/release.yml` runs on each push to master, in the concurrency group `release`
-(one run at a time, none cancelled). It runs the cli pinned there, `@agentage/cli@0.71.0`, with
+(one run at a time, none cancelled). It runs the cli pinned there, `@agentage/cli@0.73.0`, with
 `agentage extension release --changed`. The cli reference (`docs/reference.md` of agentage/cli,
 "extension release") has every step and refusal.
 
@@ -11,12 +11,12 @@
   table (`released`, `failed`, `refused`, `unchanged`) and is red when any failed.
 - A released version never changes. A fix is a new merge, so a new `N`.
 - Preview what a merge would release, from a clone whose `origin/master` holds the commit:
-  `GITHUB_REPOSITORY=agentage/examples npx -y @agentage/cli@0.71.0 extension release --changed --dry-run`.
+  `GITHUB_REPOSITORY=agentage/examples npx -y @agentage/cli@0.73.0 extension release --changed --dry-run`.
 
 ## Holds
 
 `.github/release-hold` names the folders a merge must not release yet, one line each: the folder
-name, then the reason. The release step drops a held folder from its checkout and prints
+name, then the reason. A line with a name and no reason fails the run (`FAIL release-hold: line N names <id> without a reason`); `#` lines and blank lines are fine. The release step drops a held folder from its checkout and prints
 `AMBER <name>: not released: <reason>`. Remove the line to release the folder with the next merge.
 
 - `fixture`: its image packages `fixture`, `fixture-api` and `fixture-pages` are linked to

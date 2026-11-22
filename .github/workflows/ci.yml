@@ -169,10 +169,18 @@ jobs:
         if: failure() || cancelled()
         run: docker compose -f .agentage/compose.json logs --no-color --tail 80 || true
 
+  scripts:
+    name: Workflow scripts
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+      - run: bash .github/scripts/release-hold.test.sh
+
   # The one required context: green when every picked extension passed, or none was picked.
   ci-required:
     name: ci-required
-    needs: [changes, verify, local]
+    needs: [changes, verify, local, scripts]
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
