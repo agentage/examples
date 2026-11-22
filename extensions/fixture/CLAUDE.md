@@ -2,17 +2,17 @@
 
 A three-part extension (`pages`, `api`, `app`) that agentage/e2e runs its gate
 against. The human guide is [README.md](README.md). Keep this folder small: it is test input, not a
-starting point. The extension template is agentage/extension-template.
+starting point. The extension template is `template/` of agentage/kit.
 
 ## Where facts live
 
-- What each part serves, its scope and answers: `README.md` "What it serves".
+- What each part serves, its scope and answers: `README.md` "Parts".
 - Routes, scopes, status codes, body limits: `openapi.json` (generated; never edit by hand).
 - Run it locally, ports, tokens: `README.md` "Quick start".
 - CI jobs and the `MIN_EXECUTED` floor: the repo root `.github/workflows/ci.yml`. Test coverage floor: `vitest.config.ts`.
 - Release rules and refusals: `README.md` "Release", the repo root `.github/workflows/release.yml`.
 - The manifest and its parts: the `agentage` block of `package.json`.
-- Where a release runs: `README.md` "Deploy".
+- Where a release runs: the estate that installs it is outside this repo; a release alone deploys nothing.
 - The target design (the extension model, the app host, the app shell): the north star in the agentage product vault, `projects/architecture/`. Do not copy it into this repo.
 
 Read the file named here before you read `src/`.

@@ -6,7 +6,7 @@ before you change it.
 
 ## Where facts live
 
-- The extensions and the layout: `README.md` "Layout".
+- The extensions and the layout: `README.md` "What is in this repo".
 - What CI runs per extension, the `MIN_EXECUTED` floors, the one required job `ci-required`:
   `.github/workflows/ci.yml`.
 - The release by merge, holds, the npm state: `docs/release.md`; proof `.github/workflows/release.yml`.
@@ -24,3 +24,5 @@ before you change it.
 - `.github/release-hold` keeps a folder out of the release; each line names its reason. Remove the
   line only when that reason is gone.
 - Merge a pull request that moves files with "rebase", so `git log --follow` keeps the history.
+- Commands, in the extension folder: `npm ci`, `npm run verify`, `npx agentage extension check`, one test with `npx vitest run <file>`. Never run `extension create` without `--no-install`.
+- Never publish, tag or dispatch the release by hand, and never commit a secret.
