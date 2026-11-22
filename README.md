@@ -46,7 +46,7 @@ A merge to master is the release. `.github/workflows/release.yml` runs `agentage
 - Only an extension whose folder changed since its last tag is released. Each extension gets its own version and tag.
 - The version has the form `YYYY.MDD.N`: the year, the month times 100 plus the day, and the count of that day. Example: `2026.1122.3`.
 - The tag has the form `<id>@<version>`, for example `probe@2026.1122.3`.
-- The release pushes the images `ghcr.io/agentage/<id>-<part>` and `ghcr.io/agentage/<id>`. Both `package.json` files set `"private": true`, so nothing goes to npm.
+- The release pushes the images `ghcr.io/agentage/<id>-<part>` and `ghcr.io/agentage/<id>`. The release also publishes `@agentage/extension-probe` to npm with the same date version. `fixture` sets `"private": true` and is never on npm.
 - Nobody bumps a version by hand. A released version never changes: a fix is a new merge.
 - A change to a root-level `*.md` file or to `docs/` of an extension folder releases nothing. The same holds for the root `README.md`, `docs/` and `.github/` of this repo.
 - To stop a folder from releasing, add a line to `.github/release-hold`: the folder name, then the reason. A line with no reason fails the run.
