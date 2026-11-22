@@ -1,7 +1,8 @@
 version: 2
 updates:
   - package-ecosystem: 'npm'
-    directory: '/'
+    # Each extension keeps its own lockfile.
+    directories: ['/extensions/*']
     schedule:
       interval: 'weekly'
       day: 'friday'

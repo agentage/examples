@@ -14,10 +14,56 @@ permissions:
   contents: read
 
 jobs:
+  changes:
+    name: Changed extensions
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.pick.outputs.matrix }}
+      any: ${{ steps.pick.outputs.any }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      # A change outside extensions/ (a workflow, a root file) or an unknown base tests every extension.
+      - name: Pick the extension folders this change touches
+        id: pick
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+        run: |
+          set -euo pipefail
+          all=$(find extensions -mindepth 2 -maxdepth 2 -name package.json | cut -d/ -f2 | sort)
+          if [ -n "$BASE" ] && git cat-file -e "$BASE^{commit}" 2>/dev/null; then
+            files=$(git diff --name-only "$BASE" HEAD)
+          else
+            files=''
+          fi
+          if [ -z "$files" ] || grep -qv '^extensions/' <<<"$files"; then
+            picked=$all
+          else
+            picked=$(sed -n 's#^extensions/\([^/]*\)/.*#\1#p' <<<"$files" | sort -u | grep -Fxf <(echo "$all") || true)
+          fi
+          matrix=$(for n in $picked; do
+            jq -c --arg dir "extensions/$n" '{id: .agentage.id, dir: $dir, cli: ((.agentage.parts.cli // false) != false)}' "extensions/$n/package.json"
+          done | jq -cs '{include: .}')
+          echo "picked: $(echo $picked)" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "matrix=$matrix" >> "$GITHUB_OUTPUT"
+          echo "any=$([ -n "$picked" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+
   verify:
-    name: Verify
+    name: ${{ matrix.id }} verify and check
+    needs: changes
+    if: needs.changes.outputs.any == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.changes.outputs.matrix) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.dir }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -27,6 +73,7 @@ jobs:
         with:
           node-version: 22
           cache: 'npm'
+          cache-dependency-path: ${{ matrix.dir }}/package-lock.json
 
       - name: Install
         run: npm ci
@@ -34,14 +81,26 @@ jobs:
       - name: Verify (type-check, lint, format, test with coverage, build)
         run: npm run verify
 
-      - name: Conformance (the kit's six rules; the store rule uses the runner's docker)
+      - name: Conformance (the kit's rules; the store rule uses the runner's docker)
         run: node_modules/.bin/agentage extension check
 
   local:
-    name: up and the e2e gate on local
+    name: ${{ matrix.id }} up and the e2e gate on local
+    needs: changes
+    if: needs.changes.outputs.any == 'true'
     runs-on: ubuntu-latest
     # The gate on docker stays under 10 minutes (about 3 on 2026-11-06); slower is a regression.
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.changes.outputs.matrix) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.dir }}
+    env:
+      # The fewest gate tests each extension must run (probe ran 55 on 2026-11-06); a new id needs a floor here.
+      MIN_EXECUTED: ${{ fromJSON('{"probe":"30","fixture":"25"}')[matrix.id] }}
+      SECRETS_OK: ${{ github.actor != 'dependabot[bot]' && github.event.pull_request.head.repo.fork != true }}
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -51,15 +110,17 @@ jobs:
         with:
           node-version: 22
           cache: 'npm'
+          cache-dependency-path: ${{ matrix.dir }}/package-lock.json
 
       - name: Install (and Chromium for the widget test; the runner has its OS libraries)
         run: |
+          test -n "$MIN_EXECUTED" || { echo "no MIN_EXECUTED floor for ${{ matrix.id }} in ci.yml"; exit 1; }
           npm ci
           npx playwright install chromium
 
-      # agentage/e2e is private (the org PAT_TOKEN reads it); Dependabot runs get no secrets.
+      # agentage/e2e is private (the org PAT_TOKEN reads it); Dependabot and fork runs get no secrets.
       - name: Checkout agentage/e2e
-        if: github.actor != 'dependabot[bot]'
+        if: env.SECRETS_OK == 'true'
         uses: actions/checkout@v7
         with:
           repository: agentage/e2e
@@ -68,38 +129,58 @@ jobs:
           persist-credentials: false
 
       - name: Install agentage/e2e
-        if: github.actor != 'dependabot[bot]'
+        if: env.SECRETS_OK == 'true'
+        working-directory: e2e-suite
         run: |
-          npm ci --prefix e2e-suite --no-audit --no-fund
-          npx --prefix e2e-suite playwright install chromium
+          npm ci --no-audit --no-fund
+          npx playwright install chromium
 
-      # The cli and its kit come from this lockfile: a cli or kit patch needs a probe commit.
+      # The cli and its kit come from this extension's lockfile: a cli or kit patch needs a commit here.
       - name: agentage extension up --docker (the release recipes, store, dev issuer, gateway)
         run: node_modules/.bin/agentage extension up --docker
 
-      - name: Smoke and the widget a11y test through the local gateway (e2e/)
+      - name: Smoke and the widget tests through the local gateway
         run: npm run test:e2e
 
-      - name: e2e gate on docker (agentage/e2e, probe gate docker)
-        if: github.actor != 'dependabot[bot]'
+      # {ID}_DIR lets the gate read the contracts and the cli part from this checkout.
+      - name: e2e gate on docker (agentage/e2e, the row of this id)
+        if: env.SECRETS_OK == 'true'
         working-directory: e2e-suite
         env:
-          PROBE_DIR: ${{ github.workspace }}
-        run: npm run e2e -- probe gate docker
+          EXT_DIR: ${{ github.workspace }}/${{ matrix.dir }}
+        run: |
+          var="$(echo '${{ matrix.id }}' | tr a-z- A-Z_)_DIR"
+          env "$var=$EXT_DIR" npm run e2e -- '${{ matrix.id }}' gate docker
 
-      # A gate that skipped itself is not green (55 executed on 2026-11-06); the cli part tests need PROBE_DIR.
+      # A gate that skipped itself is not green; an extension with a cli part must run its cli tests.
       - name: Assert the gate was not vacuous and read this checkout
-        if: github.actor != 'dependabot[bot]'
+        if: env.SECRETS_OK == 'true'
         working-directory: e2e-suite
-        env:
-          MIN_EXECUTED: '30'
         run: |
           set -euo pipefail
           node scripts/assert-executed.mjs
-          ran=$(jq '[.. | objects | select(.specs?) | .specs[] | select(.file | test("probe/p0/cli")) | .tests[] | select(.status != "skipped")] | length' reports/results.json)
-          echo "cli part tests executed: $ran"
-          test "$ran" -gt 0
+          if [ '${{ matrix.cli }}' = 'true' ]; then
+            ran=$(jq --arg p '${{ matrix.id }}/p0/cli' '[.. | objects | select(.specs?) | .specs[] | select(.file | test($p)) | .tests[] | select(.status != "skipped")] | length' reports/results.json)
+            echo "cli part tests executed: $ran"
+            test "$ran" -gt 0
+          fi
 
       - name: Logs on failure
         if: failure() || cancelled()
         run: docker compose -f .agentage/compose.json logs --no-color --tail 80 || true
+
+  # The one required context: green when every picked extension passed, or none was picked.
+  ci-required:
+    name: ci-required
+    needs: [changes, verify, local]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Every job passed or had nothing to test
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          set -euo pipefail
+          jq -r 'to_entries[] | "\(.key): \(.value.result)"' <<<"$NEEDS"
+          jq -e '.changes.result == "success" and all(.[]; .result == "success" or .result == "skipped")' <<<"$NEEDS" >/dev/null

@@ -1,6 +1,6 @@
-# CLAUDE.md - agentage/extension-probe
+# CLAUDE.md - extensions/probe of agentage/examples
 
-Public repo. The probe extension: it has every part kind and the shape every later extension
+Public. The probe extension: it has every part kind and the shape every later extension
 copies. Keep it minimal and exactly on the kit's rules. The human guide is [README.md](README.md):
 run, verify and release. This file adds only what the tree does not say.
 
@@ -12,8 +12,8 @@ run, verify and release. This file adds only what the tree does not say.
 - pages, ui, app, worker, cli: `docs/parts.md` "pages", "ui", "app", "worker", "cli"; proof `src/{part}/index.ts` (`src/app/index.tsx`).
 - Database, seeds, the migrate entry: `docs/parts.md` "store"; proof `migrations/`, `seeds/`.
 - Clone commands and tokens: `README.md` "Run it from a clone"; what `up` does, ports: `docs/develop.md` "Run it from a clone".
-- What CI runs: `README.md` "Verify"; the e2e gate, `MIN_EXECUTED`: `docs/develop.md` "Verify"; proof `.github/workflows/ci.yml`.
-- Release steps and refusals: `README.md` "Release"; proof `.github/workflows/release.yml`.
+- What CI runs: `README.md` "Verify"; the e2e gate, `MIN_EXECUTED`: `docs/develop.md` "Verify"; proof the repo root `.github/workflows/ci.yml`.
+- Release steps and refusals: `README.md` "Release"; proof the repo root `.github/workflows/release.yml`.
 - Where a release runs: `README.md` "Deploy".
 - The target design (the extension model, the app host, the app shell): the north star in the agentage product vault, `projects/architecture/`. Do not copy it into this repo.
 - The manifest, commands, settings and secrets: the `agentage` block of `package.json`.
@@ -33,9 +33,9 @@ Read the file named here before you read `src/`.
   generated from the Zod schemas. Regenerate with `npx agentage extension check --write` and `npm run format`.
   The release steps are in the README.
 - The release record `dist/agentage-extension.json` (images by digest) is written by
-  `build --push` only, in `release.yml`; never by hand, never committed. `up` writes its own
+  `build --push` only, in the root `release.yml`; never by hand, never committed. `up` writes its own
   `.agentage/record.json` (ignored). `agentage extension release` keeps a released version's images
-  and record: never move a `v*` tag, release a new version.
+  and record: never move a `probe@*` tag (or an old `v*` tag), release a new version.
 
 ## Commands
 
@@ -46,9 +46,9 @@ Read the file named here before you read `src/`.
 - a flake is fixed at its cause: the gate runs with no retries, `e2e/` retries once in CI only to
   keep a trace and fails a test that passed on it (`failOnFlakyTests`); a test that needs
   the store boots it in `beforeAll` (PGlite's first use is a WASM boot), never inside a test's 5 s.
-- `@agentage/cli` is an exact devDependency: CI and the release run `node_modules/.bin/agentage`,
-  so the cli and the kit tool that writes the image recipe are this lockfile's; a cli or kit patch
-  reaches the images only through a probe commit (Dependabot's weekly group)
+- `@agentage/cli` is a devDependency: CI runs `node_modules/.bin/agentage`, so its cli and kit tool
+  are this lockfile's (Dependabot's weekly group). The release runs the cli pinned in the root
+  `release.yml`; the images install this folder's lockfile
 - to try an unreleased kit or widget: `npm pack` them from agentage/platform into `.kit/`
   (ignored) and `npm install ./.kit/*.tgz`, as platform CI does; never commit a tarball or a
   `file:` spec

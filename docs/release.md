@@ -1,0 +1,28 @@
+# Release by merge
+
+`.github/workflows/release.yml` runs on each push to master, in the concurrency group `release`
+(one run at a time, none cancelled). It runs the cli pinned there, `@agentage/cli@0.71.0`, with
+`agentage extension release --changed`. The cli reference (`docs/reference.md` of agentage/cli,
+"extension release") has every step and refusal.
+
+- Changed means a file in the folder differs from the last `<id>@*` tag, or there is no such tag,
+  or that tag has no record. A change to a root file (a workflow, this file) releases nothing.
+- Each changed extension is tried; one that fails does not stop the others. The run ends with one
+  table (`released`, `failed`, `refused`, `unchanged`) and is red when any failed.
+- A released version never changes. A fix is a new merge, so a new `N`.
+- Preview what a merge would release, from a clone whose `origin/master` holds the commit:
+  `GITHUB_REPOSITORY=agentage/examples npx -y @agentage/cli@0.71.0 extension release --changed --dry-run`.
+
+## Holds
+
+`.github/release-hold` names the folders a merge must not release yet, one line each: the folder
+name, then the reason. The release step drops a held folder from its checkout and prints
+`AMBER <name>: not released: <reason>`. Remove the line to release the folder with the next merge.
+
+- `fixture`: its image packages `fixture`, `fixture-api` and `fixture-pages` are linked to
+  agentage/extension-fixture. The release can push them only when agentage/examples can write them.
+
+## npm
+
+- TODO: remove `"private": true` from `extensions/probe/package.json` once the owner confirms the first date version of the public `@agentage/extension-probe` on npm (it cannot be undone) and its npm trusted publisher names agentage/examples `release.yml`.
+- `fixture` is a private package for good: it is never on npm.

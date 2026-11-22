@@ -1,4 +1,4 @@
-# extension-probe
+# probe
 
 The probe is a small agentage extension that has one of every part kind: pages, ui, api, mcp, worker, store, cli and app. A part does one job. Extension authors use it
 as proof that the shape works. Maintainers test with it. To start your own
@@ -23,7 +23,7 @@ agentage ping                       # prints pong
 You need Node 22 or newer, npm 10 or newer, Docker and git. Nothing needs a sign-in.
 
 ```bash
-git clone https://github.com/agentage/extension-probe && cd extension-probe
+git clone https://github.com/agentage/examples && cd examples/extensions/probe
 npm ci                                   # installs the cli pinned in the lockfile
 npx agentage extension up --docker       # last line: ready    <n> parts healthy    <n> s
 # open http://localhost:4280/ui/<version>/harness.html (version from package.json), click ping
@@ -83,18 +83,19 @@ More: [docs/develop.md](docs/develop.md#verify)
 
 ## Release
 
-A `v*` tag runs `.github/workflows/release.yml`. It builds and pushes
-`ghcr.io/agentage/probe-{pages,ui,api,mcp,worker}:{version}`. It also builds the one image that an app host
-runs. It attaches two records to the GitHub release: `agentage-extension.json` (the five part images
-by digest) and `agentage-container.json` (the one image). It publishes
-`@agentage/extension-probe` to npm with provenance.
+A merge to master that changes this folder releases it: the root `.github/workflows/release.yml`
+runs `agentage extension release --changed` (see the [repo README](../../README.md#release)). It
+gives the probe a date version `YYYY.MDD.N` and the tag `probe@<version>`, builds and pushes
+`ghcr.io/agentage/probe-{pages,ui,api,mcp,worker}:{version}` and the one image that an app host
+runs, and attaches two records to the GitHub release: `agentage-extension.json` (the five part
+images by digest) and `agentage-container.json` (the one image). Nothing is bumped by hand: the
+version is written in the CI copy only. Releases up to 0.9.3 are `v*` tags.
 
-1. Bump `version` in `package.json`.
-2. Run `npx agentage extension check --write` and `npm run format`.
-3. Commit to `master`, then tag `v<version>`. The tag must equal the version.
+For now `package.json` has `"private": true`, so a release does not publish
+`@agentage/extension-probe` to npm; see [docs/release.md](../../docs/release.md).
 
-A released version never changes. A re-run keeps its images and record and only retries npm. `agentage extension release`
-refuses a tag moved to another commit. Ship a fix as a new version.
+A released version never changes: `agentage extension release` refuses a tag moved to another
+commit. Ship a fix as a new merge.
 
 ## Deploy
 
