@@ -2,7 +2,7 @@
 
 A three-part extension (`pages`, `api`, `app`) that agentage/e2e runs its gate
 against. The human guide is [README.md](README.md). Keep this folder small: it is test input, not a
-starting point. The extension template is agentage/extension-template.
+starting point. The extension template is `template/` of agentage/kit.
 
 ## Where facts live
 

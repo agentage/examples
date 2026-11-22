@@ -19,8 +19,7 @@
 name, then the reason. A line with a name and no reason fails the run (`FAIL release-hold: line N names <id> without a reason`); `#` lines and blank lines are fine. The release step drops a held folder from its checkout and prints
 `AMBER <name>: not released: <reason>`. Remove the line to release the folder with the next merge.
 
-- `fixture`: its image packages `fixture`, `fixture-api` and `fixture-pages` are linked to
-  agentage/extension-fixture. The release can push them only when agentage/examples can write them.
+- No folder is held today: the file holds comments only.
 
 ## npm
 
