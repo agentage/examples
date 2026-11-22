@@ -1,16 +1,18 @@
 {
   "name": "@agentage/extension-probe",
   "version": "0.9.3",
+  "private": true,
   "description": "The probe extension: one of every agentage part kind, the template every later extension copies",
   "type": "module",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/agentage/extension-probe.git"
+    "url": "git+https://github.com/agentage/examples.git",
+    "directory": "extensions/probe"
   },
   "homepage": "https://agentage.io",
   "bugs": {
-    "url": "https://github.com/agentage/extension-probe/issues"
+    "url": "https://github.com/agentage/examples/issues"
   },
   "publishConfig": {
     "access": "public"
