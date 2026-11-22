@@ -17,7 +17,7 @@
         "required": ["msg"],
         "type": "object"
       },
-      "name": "probe__echo",
+      "name": "probe_echo",
       "outputSchema": {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
         "additionalProperties": false,

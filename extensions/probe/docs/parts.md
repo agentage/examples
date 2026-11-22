@@ -55,7 +55,7 @@ Source: [`src/api`](../src/api/index.ts).
 
 Source: [`src/mcp`](../src/mcp/index.ts).
 
-- `POST /mcp` serves the tool `probe__echo`. It needs `probe:read`.
+- `POST /mcp` serves the tool `probe_echo`. It needs `probe:read`.
 - `msg` is up to 200 characters. The tool answers `pong <msg>`.
 - The tool list is in [`probe.mcpc.json`](../probe.mcpc.json).
 

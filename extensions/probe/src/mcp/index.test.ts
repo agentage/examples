@@ -14,7 +14,7 @@ beforeAll(async () => {
 });
 afterAll(() => server.close());
 
-describe(`${id}__echo`, () => {
+describe(`${id}_echo`, () => {
   it(`needs ${id}:read: the scope it declares beside its schemas (C7)`, () => {
     const recorded = createTestContext({ extension: { id } });
     create(recorded);

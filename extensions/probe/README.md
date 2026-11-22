@@ -23,7 +23,7 @@ Each part is one folder that does one job and exports `create(ctx)`. The ui part
 | pages  | `src/pages`             | `/`: `probe {version} · {commit}`                                                     |
 | ui     | `src/ui`                | `/ui/{version}/probe.js`, `harness.html`                                              |
 | api    | `src/api`               | `GET /api/probe/echo`, `GET /api/probe/ticks`, `POST /api/probe/emit`, `openapi.json` |
-| mcp    | `src/mcp`               | `POST /mcp`: tool `probe__echo`                                                       |
+| mcp    | `src/mcp`               | `POST /mcp`: tool `probe_echo`                                                        |
 | worker | `src/worker`            | job `tick`, one row in `ticks` per minute                                             |
 | store  | `migrations/`, `seeds/` | postgres                                                                              |
 | cli    | `src/cli`               | `agentage ping [msg]`                                                                 |
