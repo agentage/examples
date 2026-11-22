@@ -23,5 +23,5 @@ name, then the reason. A line with a name and no reason fails the run (`FAIL rel
 
 ## npm
 
-- TODO: remove `"private": true` from `extensions/probe/package.json` once the owner confirms the first date version of the public `@agentage/extension-probe` on npm (it cannot be undone) and its npm trusted publisher names agentage/examples `release.yml`.
+- The release publishes `@agentage/extension-probe` to npm by trusted publishing (publisher: this repository, workflow `release.yml`), before it writes the release record. A date version on npm cannot be removed.
 - `fixture` is a private package for good: it is never on npm.

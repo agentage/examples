@@ -1,7 +1,6 @@
 {
   "name": "@agentage/extension-probe",
   "version": "0.9.3",
-  "private": true,
   "description": "The probe extension: one of every agentage part kind, the template every later extension copies",
   "type": "module",
   "license": "MIT",
