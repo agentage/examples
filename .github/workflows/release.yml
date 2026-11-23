@@ -7,6 +7,7 @@ name: Release
 on:
   push:
     branches: [master]
+  workflow_dispatch: # runs the checks again; an unchanged extension is not released
 
 concurrency:
   group: release
@@ -68,6 +69,10 @@ jobs:
         env:
           GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+      # Before any tag: a publish that npm refuses would leave a tag and images with no record.
+      - name: npm takes this workflow as the publisher of each public package
+        if: steps.hold.outputs.any == 'true'
+        run: .github/scripts/npm-publisher-check.sh extensions/*/
       - if: steps.hold.outputs.any == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
