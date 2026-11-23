@@ -1,7 +1,7 @@
 {
   "name": "@agentage/extension-probe",
   "version": "0.9.3",
-  "description": "The probe extension: one of every agentage part kind, the template every later extension copies",
+  "description": "The probe extension: one of every agentage part kind; it proves the kit on each release",
   "type": "module",
   "license": "MIT",
   "repository": {
@@ -9,7 +9,7 @@
     "url": "git+https://github.com/agentage/examples.git",
     "directory": "extensions/probe"
   },
-  "homepage": "https://agentage.io",
+  "homepage": "https://github.com/agentage/examples/tree/master/extensions/probe#readme",
   "bugs": {
     "url": "https://github.com/agentage/examples/issues"
   },
