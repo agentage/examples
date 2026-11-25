@@ -19,7 +19,7 @@
   },
   "engines": {
     "node": ">=22",
-    "agentage": "^0.21"
+    "agentage": "^0.23"
   },
   "agentage": {
     "id": "fixture",
@@ -58,14 +58,13 @@
     "prepublishOnly": "npm run verify"
   },
   "dependencies": {
-    "@agentage/extension": "^0.21.0",
+    "@agentage/extension": "^0.23.0",
     "express": "^5.1.0",
     "zod": "^4.2.0"
   },
   "devDependencies": {
-    "@agentage/cli": "^0.69.0",
+    "@agentage/cli": "^0.74.0",
     "@agentage/components": "0.21.0",
-    "@agentage/design-system": "0.20.1",
     "@electric-sql/pglite": "0.5.16",
     "@playwright/test": "1.65.1",
     "@tailwindcss/postcss": "4.3.5",
