@@ -1,6 +1,6 @@
 import { useAppState } from '@agentage/extension/app';
-import { Input } from '@agentage/design-system/input';
-import { Label } from '@agentage/design-system/label';
+import { Input } from '@agentage/components/input';
+import { Label } from '@agentage/components/label';
 
 // The fixture app: one input kept by the shell through state('note'), so it survives a page switch.
 export default function App() {

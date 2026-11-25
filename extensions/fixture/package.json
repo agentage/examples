@@ -64,6 +64,7 @@
   },
   "devDependencies": {
     "@agentage/cli": "^0.69.0",
+    "@agentage/components": "0.21.0",
     "@agentage/design-system": "0.20.1",
     "@electric-sql/pglite": "0.5.16",
     "@playwright/test": "1.65.1",
