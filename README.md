@@ -35,7 +35,7 @@ npm run verify                    # type-check, lint, format, tests with coverag
 npx agentage extension check      # the kit's six rules
 ```
 
-CI runs `verify`, `check`, `agentage extension up --docker` and the e2e tests for each folder that a change touches. A change outside `extensions/` tests all folders. The job `ci-required` is green when all of them pass.
+CI runs `verify`, `check`, `agentage extension up --docker` and the e2e tests for each folder that a change touches. A change outside `extensions/` tests all folders. The job `ci-required` is green when all of them pass. A pull request is tested against the agentage/e2e branch of the same name when it exists, else the repo variable `E2E_REF`, else master.
 
 To start a new extension, run `npx @agentage/cli@latest extension create <id> --no-install`. The template comes from [agentage/kit](https://github.com/agentage/kit).
 

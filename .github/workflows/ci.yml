@@ -118,12 +118,32 @@ jobs:
           npm ci
           npx playwright install chromium
 
+      # The same rule as agentage/kit: head, a non-default base, vars.E2E_REF, master.
+      - name: Pick the agentage/e2e branch
+        id: e2e-ref
+        if: env.SECRETS_OK == 'true'
+        env:
+          E2E_REF: ${{ vars.E2E_REF }}
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          branch="${E2E_REF:-master}"
+          why="${E2E_REF:+variable E2E_REF}"; why="${why:-default master}"
+          # The base counts only when it is another PR's branch: a PR on master falls to the variable.
+          base="${GITHUB_BASE_REF:-}"
+          if [ "$base" = "${{ github.event.repository.default_branch }}" ]; then base=""; fi
+          for ref in "$base" "${GITHUB_HEAD_REF:-}"; do
+            if [ -n "$ref" ] && gh api "repos/agentage/e2e/branches/$ref" --silent 2>/dev/null; then branch="$ref"; why="same-name branch"; fi
+          done
+          echo "e2e branch: $branch ($why)" | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
       # agentage/e2e is private (the org PAT_TOKEN reads it); Dependabot and fork runs get no secrets.
       - name: Checkout agentage/e2e
         if: env.SECRETS_OK == 'true'
         uses: actions/checkout@v7
         with:
           repository: agentage/e2e
+          ref: ${{ steps.e2e-ref.outputs.branch }}
           path: e2e-suite
           token: ${{ secrets.PAT_TOKEN }}
           persist-credentials: false
