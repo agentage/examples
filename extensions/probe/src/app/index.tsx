@@ -3,6 +3,7 @@ import { Region, useAppHost, useAppShell, useAppState } from '@agentage/extensio
 import { Button } from '@agentage/components/button';
 import { Input } from '@agentage/components/input';
 import { Label } from '@agentage/components/label';
+import { PageHeader } from '@agentage/components/page-header';
 
 interface Echo {
   msg: string;
@@ -28,7 +29,7 @@ export default function App() {
   const [pong, ping] = usePing(api);
   return (
     <section className="flex max-w-xl flex-col gap-4 p-6">
-      <h1 className="text-xl font-semibold">Probe</h1>
+      <PageHeader variant="detail" title="Probe" className="pt-0" />
       <p>User {user?.name ?? user?.email ?? 'none'}</p>
       <p>Scopes {scopes.join(',')}</p>
       <div className="flex flex-col gap-2">
