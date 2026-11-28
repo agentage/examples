@@ -26,3 +26,9 @@ before you change it.
 - Merge a pull request that moves files with "rebase", so `git log --follow` keeps the history.
 - Commands, in the extension folder: `npm ci`, `npm run verify`, `npx agentage extension check`, one test with `npx vitest run <file>`. Never run `extension create` without `--no-install`.
 - Never publish, tag or dispatch the release by hand, and never commit a secret.
+- UI (an `app`, `ui` or `pages` part) is built from `@agentage/components`. Look in the catalog
+  first: <https://components.next.agentage.io>. Compose from its components and pattern pages
+  before you write local UI. Fix a missing or wrong component with a pull request in
+  `agentage/components`, not with a local copy, and say the gap in the reply. Do not use
+  `@agentage/design-system` in new work. A prototype or an HTML draft uses the same tokens and
+  scale. Scale, props and names: the `CLAUDE.md` of `agentage/components`.
