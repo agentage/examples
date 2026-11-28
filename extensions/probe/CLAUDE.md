@@ -49,6 +49,6 @@ Read the file named here before you read `src/`.
 - `@agentage/cli` is a devDependency: CI runs `node_modules/.bin/agentage`, so its cli and kit tool
   are this lockfile's (Dependabot's weekly group). The release runs the cli pinned in the root
   `release.yml`; the images install this folder's lockfile
-- to try an unreleased kit or widget: `npm pack` them from agentage/platform into `.kit/`
-  (ignored) and `npm install ./.kit/*.tgz`, as platform CI does; never commit a tarball or a
+- to try an unreleased kit or widget: `npm pack` them from agentage/kit into `.kit/`
+  (ignored) and `npm install ./.kit/*.tgz`, as the kit CI does; never commit a tarball or a
   `file:` spec
