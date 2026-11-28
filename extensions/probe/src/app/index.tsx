@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Region, useAppHost, useAppShell, useAppState } from '@agentage/extension/app';
-import { Button } from '@agentage/design-system/button';
-import { Input } from '@agentage/design-system/input';
-import { Label } from '@agentage/design-system/label';
+import { Button } from '@agentage/components/button';
+import { Input } from '@agentage/components/input';
+import { Label } from '@agentage/components/label';
 
 interface Echo {
   msg: string;

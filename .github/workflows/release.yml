@@ -76,4 +76,4 @@ jobs:
       - if: steps.hold.outputs.any == 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx -y @agentage/cli@0.73.0 extension release --changed # pinned: the merge-release cli
+        run: npx -y @agentage/cli@0.74.0 extension release --changed # pinned: the merge-release cli

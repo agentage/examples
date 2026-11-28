@@ -40,5 +40,5 @@ Read the file named here before you read `src/`.
 - A merge that changes this folder is its release (`agentage extension release --changed`). The
   package is `"private": true`, so the release never publishes to npm. A released version keeps its
   images and records; a fix is a new version.
-- `@agentage/cli` and the kit are caret ranges in `package.json` (`^0.69.0`, `^0.21.0`); Dependabot raises them in a
+- `@agentage/cli` and the kit are caret ranges in `package.json` (`^0.74.0`, `^0.23.0`); Dependabot raises them in a
   weekly group PR.
