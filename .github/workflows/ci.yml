@@ -196,6 +196,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - run: bash .github/scripts/release-hold.test.sh
+      - run: bash .github/scripts/npm-publisher-check.test.sh
 
   # The one required context: green when every picked extension passed, or none was picked.
   ci-required:

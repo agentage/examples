@@ -3,7 +3,7 @@
 set -euo pipefail
 
 id_token() {
-  curl -fsS -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
+  curl -fsS --max-time 20 -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
     "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=npm:registry.npmjs.org" | jq -r .value
 }
 
@@ -13,7 +13,7 @@ for dir in "$@"; do
   [ "$(jq -r '.private // false' "$dir/package.json")" = "true" ] && continue
   name=$(jq -r .name "$dir/package.json")
   url="https://registry.npmjs.org/-/npm/v1/oidc/token/exchange/package/$(jq -rn --arg n "$name" '$n|@uri')"
-  status=$(curl -sS -o /dev/null -w '%{http_code}' -X POST -H "Authorization: Bearer $(id_token)" "$url")
+  status=$(curl -sS --max-time 20 -o /dev/null -w '%{http_code}' -X POST -H "Authorization: Bearer $(id_token)" "$url")
   if [ "$status" = "201" ] || [ "$status" = "200" ]; then
     echo "PASS $name: npm takes this workflow as its publisher"
   else

@@ -1,7 +1,7 @@
 # Release by merge
 
 `.github/workflows/release.yml` runs on each push to master, in the concurrency group `release`
-(one run at a time, none cancelled). It runs the cli pinned there, `@agentage/cli@0.76.0`, with
+(one run at a time, none cancelled). It runs the cli at the version in `release.yml`, with
 `agentage extension release --changed`. The cli reference (`docs/reference.md` of agentage/cli,
 "extension release") has every step and refusal.
 
@@ -11,7 +11,7 @@
   table (`released`, `failed`, `refused`, `unchanged`) and is red when any failed.
 - A released version never changes. A fix is a new merge, so a new `N`.
 - Preview what a merge would release, from a clone whose `origin/master` holds the commit:
-  `GITHUB_REPOSITORY=agentage/examples npx -y @agentage/cli@0.76.0 extension release --changed --dry-run`.
+  `GITHUB_REPOSITORY=agentage/examples npx -y @agentage/cli@<the version in release.yml> extension release --changed --dry-run`.
 
 ## Holds
 
