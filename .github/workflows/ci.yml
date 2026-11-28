@@ -124,13 +124,14 @@ jobs:
         if: env.SECRETS_OK == 'true'
         env:
           E2E_REF: ${{ vars.E2E_REF }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
           GH_TOKEN: ${{ secrets.PAT_TOKEN }}
         run: |
           branch="${E2E_REF:-master}"
           why="${E2E_REF:+variable E2E_REF}"; why="${why:-default master}"
           # The base counts only when it is another PR's branch: a PR on master falls to the variable.
           base="${GITHUB_BASE_REF:-}"
-          if [ "$base" = "${{ github.event.repository.default_branch }}" ]; then base=""; fi
+          if [ "$base" = "$DEFAULT_BRANCH" ]; then base=""; fi
           for ref in "$base" "${GITHUB_HEAD_REF:-}"; do
             if [ -n "$ref" ] && gh api "repos/agentage/e2e/branches/$ref" --silent 2>/dev/null; then branch="$ref"; why="same-name branch"; fi
           done
