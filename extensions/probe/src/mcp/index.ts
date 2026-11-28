@@ -1,7 +1,7 @@
 import { type McpContext } from '@agentage/extension';
 import { z } from 'zod';
 
-// The kit serves this tool as probe__echo on POST /mcp.
+// The kit serves this tool as probe_echo on POST /mcp.
 export function create(ctx: McpContext) {
   ctx.tool(
     'echo',

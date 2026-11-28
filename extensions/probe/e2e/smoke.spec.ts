@@ -31,7 +31,7 @@ test('discovery is valid, lists five images by digest, a postgres store and the 
   expect(res.status()).toBe(200);
   expect(res.headers()['access-control-allow-origin']).toBe('*');
   const doc = DiscoveryDocumentSchema.parse(await res.json());
-  const tools = [{ name: `${id}__echo`, scope: `${id}:read` }];
+  const tools = [{ name: `${id}_echo`, scope: `${id}:read` }];
   expect(doc).toMatchObject({ id, version, tools, commands: ['ping'] });
   expect(Object.keys(doc.parts).sort()).toEqual(['api', 'mcp', 'pages', 'store', 'ui', 'worker']);
   expect(doc.parts.store).toEqual({ kind: 'postgres', migrations: 1 });
@@ -98,7 +98,7 @@ test('/mcp is POST only and lists the echo tool anonymously', async ({ request }
   expect((await request.get('/mcp')).status()).toBe(405);
   const res = await request.post('/mcp', mcp('tools/list'));
   expect(res.status()).toBe(200);
-  expect(await res.text()).toContain(`"name":"${id}__echo"`);
+  expect(await res.text()).toContain(`"name":"${id}_echo"`);
 });
 
 test('the ui bundle and the harness are served, immutable', async ({ request }) => {
